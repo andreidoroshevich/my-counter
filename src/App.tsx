@@ -7,48 +7,53 @@ import Header from "./component/Header";
 
 
 function App() {
-    const [minSetValue, setMinSetValue] = useState(0);
-    const [maxSetValue, setMaxSetValue] = useState(0);
-    const [minValue, setMinValue] = useState(0);
-    const [maxValue, setMaxValue] = useState(0);
+    const [minSetValue, setMinSetValue] = useState<number>(0);
+    const [maxSetValue, setMaxSetValue] = useState<number>(0);
+    const [minValue, setMinValue] = useState<number>(0);
+    const [maxValue, setMaxValue] = useState<number>(0);
     const [count, setCount] = useState<number>(minValue)
 
 
-    useEffect(()=>{
+    useEffect(() => {
+
         let countAsString = localStorage.getItem('count')
         if (countAsString) {
             let newValue = JSON.parse(countAsString)
-            setCount(newValue)}
+            setCount(newValue)
+        }
 
-            let maxSetValueAsString = localStorage.getItem('maxSetValue')
-            if (maxSetValueAsString) {
-                let newMaxSetValue = JSON.parse(maxSetValueAsString)
-                setMaxSetValue(newMaxSetValue)}
+        let maxSetValueAsString = localStorage.getItem('maxSetValue')
+        if (maxSetValueAsString) {
+            let newMaxSetValue = JSON.parse(maxSetValueAsString)
+            setMaxSetValue(newMaxSetValue)
+        }
 
         let minSetValueAsString = localStorage.getItem('minSetValue')
         if (minSetValueAsString) {
             let newMinSetValue = JSON.parse(minSetValueAsString)
-            setMinSetValue(newMinSetValue)}
+            setMinSetValue(newMinSetValue)
+        }
 
         let minValueAsString = localStorage.getItem('minValue')
         if (minValueAsString) {
             let newMinValue = JSON.parse(minValueAsString)
-            setMinValue(newMinValue)}
+            setMinValue(newMinValue)
+        }
 
         let maxValueAsString = localStorage.getItem('maxValue')
         if (maxValueAsString) {
             let newMaxValue = JSON.parse(maxValueAsString)
-            setMaxValue(newMaxValue)}
-    },[])
+            setMaxValue(newMaxValue)
+        }
+    }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         localStorage.setItem('count', JSON.stringify(count))
         localStorage.setItem('maxSetValue', JSON.stringify(maxSetValue))
         localStorage.setItem('minSetValue', JSON.stringify(minSetValue))
         localStorage.setItem('minValue', JSON.stringify(minValue))
         localStorage.setItem('maxValue', JSON.stringify(maxValue))
-    },[count, maxSetValue, minSetValue, minValue, maxValue])
-
+    }, [count, maxSetValue, minSetValue, minValue, maxValue])
 
 
     const buttonAddHandler = () => {
@@ -68,35 +73,60 @@ function App() {
 
     };
 
-const onClickSetSettings = () =>{
-    setMaxValue(maxSetValue)
-    setCount(minSetValue)
-}
+    const onClickSetSettings = () => {
+        setMaxValue(maxSetValue)
+        setMinValue(minSetValue)
+        setCount(minSetValue)
+    }
+
+
+    const onClickClearAll = ()=>{
+        localStorage.clear()
+        setMinSetValue(0)
+        setMaxSetValue(0)
+        setMinValue(0)
+        setMaxValue(0)
+        setCount(0)
+    }
 
     return (
         <div className="App">
 
             <div className={'setting'}>
-                <Header className={((minSetValue >= maxSetValue) || (minSetValue < 0)) && ((minSetValue !==0) && (maxSetValue !==0))  ? 'red' : ''} name={((minSetValue >= maxSetValue) || (minSetValue < 0)) && ((minSetValue !==0) && (maxSetValue !==0)) ?  "Incorrect Value" : "Set Min/Max count Value"}/>
+                <Header
+                    className={((minSetValue >= maxSetValue) || (minSetValue < 0)) && ((minSetValue !== 0) || (maxSetValue !== 0)) ? 'red' : ''}
+                    name={((minSetValue >= maxSetValue) || (minSetValue < 0)) && ((minSetValue !== 0) || (maxSetValue !== 0)) ? "Incorrect Value" : "Set Min/Max count Value"}/>
 
-                <div className={'valueItem'}><span>maxValue: </span><input className={((minSetValue >= maxSetValue) || (minSetValue < 0)) && ((minSetValue !==0) && (maxSetValue !==0))  ? 'red' : ''} type={"number"}
-                                                   value={maxSetValue}
-                                                   onChange={onChangeMaxValueHandler}/>
+                <div className={'valueItem'}><span>maxValue: </span>
+                    <input
+                    className={((minSetValue >= maxSetValue) || (minSetValue < 0) || (maxSetValue < 0)) && ((minSetValue !== 0) || (maxSetValue !== 0)) ? 'red' : ''}
+                    type={"number"}
+                    value={maxSetValue}
+                    onChange={onChangeMaxValueHandler}/>
                 </div>
 
                 <div className={'valueItem'}><span>minValue: </span>
-                    <input className={((minSetValue >= maxSetValue) || (minSetValue < 0)) && ((minSetValue !==0) && (maxSetValue !==0))  ? 'red' : ''} type={"number"}
-                           value={minSetValue}
-                           onChange={onChangeMinValueHandler}/>
+                    <input
+                        className={((minSetValue >= maxSetValue) || (minSetValue < 0) || (maxSetValue < 0)) && ((minSetValue !== 0) || (maxSetValue !== 0)) ? 'red' : ''}
+                        type={"number"}
+                        value={minSetValue}
+                        onChange={onChangeMinValueHandler}/>
                 </div>
 
-                <Button className={"setButton btn_add"} disabled={(minSetValue >= maxSetValue) || (minSetValue < 0)}  name={'SET'} callBack={onClickSetSettings}/>
+                <Button className={(minSetValue >= maxSetValue) || (minSetValue < 0) || (maxSetValue < 0) ? '' : "setButton btn_add"} disabled={(minSetValue >= maxSetValue) || (minSetValue < 0)}
+                        name={'SET'} callBack={onClickSetSettings}/>
             </div>
             <div className={'count'}>
-                <Header className={(count === maxValue) && (maxValue !==0)  ? 'red' : ''} name={(count !== maxValue) || (count === 0) ? "Simple React Counter" : "Maximum value reached"}/>
-                <Count className={(count === maxValue) && (maxValue !==0)  ? 'max-counter' : 'counter'} count={count}/>
-                <Button className={count !== minValue ? 'btn_reset' : ''} callBack={buttonResetHandler} disabled={(count === minValue) || (count === minSetValue) ? true : false} name={'Reset'}/>
-                <Button className={count < maxValue ? 'btn_add' : ''} disabled={count === maxValue} callBack={buttonAddHandler} name={'Increment'}/>
+                <Header className={(count === maxValue) && (maxValue !== 0) ? 'red' : ''}
+                        name={(count !== maxValue) || (count === 0) ? "Simple React Counter" : "Maximum value reached"}/>
+                <Count className={(count === maxValue) && (maxValue !== 0) ? 'max-counter' : 'counter'} count={count}/>
+                <Button className={count !== minValue ? 'btn_reset' : ''} callBack={buttonResetHandler}
+                        disabled={(count === minValue) || (count === minSetValue) ? true : false} name={'Reset'}/>
+                <Button className={count < maxValue ? 'btn_add' : ''} disabled={count === maxValue}
+                        callBack={buttonAddHandler} name={'Increment'}/>
+                <Button className={count < maxValue ? 'btn_add' : ''} disabled={maxValue === 0}
+                        callBack={onClickClearAll} name={'Clear All'}/>
+
 
             </div>
         </div>
