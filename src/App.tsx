@@ -124,7 +124,7 @@ function App() {
                         disabled={(count === minValue) || (count === minSetValue) ? true : false} name={'Reset'}/>
                 <Button className={count < maxValue ? 'btn_add' : ''} disabled={count === maxValue}
                         callBack={buttonAddHandler} name={'Increment'}/>
-                <Button className={count < maxValue ? 'btn_add' : ''} disabled={maxValue === 0}
+                <Button className={count < maxValue ? 'btn_reset' : ''} disabled={maxValue === 0}
                         callBack={onClickClearAll} name={'Clear All'}/>
 
 
